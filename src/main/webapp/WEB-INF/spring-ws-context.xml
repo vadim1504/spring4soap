@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
+
+    <context:component-scan base-package="soap"/>
+
+    <bean id="getPriceSchema" class="org.springframework.xml.xsd.SimpleXsdSchema">
+        <property name="xsd" value="classpath:price.xsd"/>
+    </bean>
+
+    <bean id="createPriceSchema" class="org.springframework.xml.xsd.SimpleXsdSchema">
+        <property name="xsd" value="classpath:price2.xsd"/>
+    </bean>
+
+    <bean id="getPrice" class="org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition">
+        <property name="schema" ref="getPriceSchema"/>
+        <property name="portTypeName" value="PricePort"/>
+        <property name="locationUri" value="/soap"/>
+        <property name="targetNamespace" value="http://peopleShoes.com/soap"/>
+    </bean>
+
+    <bean id="createPrice" class="org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition">
+        <property name="schema" ref="createPriceSchema"/>
+        <property name="portTypeName" value="PricePort"/>
+        <property name="locationUri" value="/soap"/>
+        <property name="targetNamespace" value="http://peopleShoes.com/soap/create"/>
+    </bean>
+
+
+    <bean id="priceService" class="soap.service.PriceService">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <jee:jndi-lookup id="dataSource" jndi-name="jdbc/shoes"/>
+
+</beans>

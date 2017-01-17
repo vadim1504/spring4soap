@@ -1,0 +1,29 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://peopleShoes.com/soap/create"
+           targetNamespace="http://peopleShoes.com/soap/create" elementFormDefault="qualified">
+
+    <xs:element name="PriceRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="idShoes" type="xs:int"/>
+                <xs:element name="priceEu" type="xs:double"/>
+                <xs:element name="priceRu" type="xs:double"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="PriceResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="price" type="tns:price"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="price">
+        <xs:sequence>
+            <xs:element name="id" type="xs:int"/>
+            <xs:element name="idShoes" type="xs:int"/>
+            <xs:element name="priceEu" type="xs:double"/>
+            <xs:element name="priceRu" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
