@@ -32,9 +32,8 @@ public class PriceEndpoint {
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "getListPriceRequest")
 	@ResponsePayload
-	public GetListPriceResponse getListPrice(@RequestPayload GetListPriceRequest request) {
+	public GetListPriceResponse getListPrice() {
 
-		System.out.println(request.getMessage());
 		ObjectFactory objectFactory = new ObjectFactory();
 		GetListPriceResponse priceResponse = objectFactory.createGetListPriceResponse();
 
@@ -48,10 +47,7 @@ public class PriceEndpoint {
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "createPriceRequest")
 	@ResponsePayload
-	public CreatePriceResponse createPrice(@RequestPayload CreatePriceRequest request) {
-
-		ObjectFactory objectFactory = new ObjectFactory();
-		CreatePriceResponse priceResponse = objectFactory.createCreatePriceResponse();
+	public void createPrice(@RequestPayload CreatePriceRequest request) {
 
 		Price price = new Price();
 		price.setIdShoes(request.getIdShoes());
@@ -60,31 +56,20 @@ public class PriceEndpoint {
 
 		priceService.createPrice(price);
 
-		Price price1 = priceService.getPrice(request.getIdShoes());
 
-		priceResponse.setPrice(price1);
-
-		return priceResponse;
 	}
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "deletePriceRequest")
 	@ResponsePayload
-	public DeletePriceResponse deletePrice(@RequestPayload DeletePriceRequest request) {
-
-		ObjectFactory objectFactory = new ObjectFactory();
-		DeletePriceResponse priceResponse = objectFactory.createDeletePriceResponse();
+	public void deletePrice(@RequestPayload DeletePriceRequest request) {
 
 		priceService.deletePrice(request.getIdPrice());
-		priceResponse.setMessage("Ok");
-		return priceResponse;
+
 	}
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "updatePriceRequest")
 	@ResponsePayload
-	public UpdatePriceResponse createPrice(@RequestPayload UpdatePriceRequest request) {
-
-		ObjectFactory objectFactory = new ObjectFactory();
-		UpdatePriceResponse priceResponse = objectFactory.createUpdatePriceResponse();
+	public void updatePrice(@RequestPayload UpdatePriceRequest request) {
 
 		Price price = new Price();
 		price.setId(request.getId());
@@ -93,8 +78,5 @@ public class PriceEndpoint {
 		price.setPriceRu(request.getPriceRu());
 		priceService.updatePrice(price);
 
-		price = priceService.getPrice(price.getIdShoes());
-		priceResponse.setPrice(price);
-		return priceResponse;
 	}
 }
