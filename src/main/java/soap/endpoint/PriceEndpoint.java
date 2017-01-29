@@ -1,9 +1,6 @@
 package soap.endpoint;
 
-import model.createPrice.Price;
-import model.getPrice.ObjectFactory;
-import model.getPrice.PriceRequest;
-import model.getPrice.PriceResponse;
+import model.price.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -11,33 +8,50 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import soap.service.PriceService;
 
+import java.util.List;
+
 @Endpoint
 public class PriceEndpoint {
 
-	private static final String NAMESPACE_URI = "http://peopleShoes.com/soap";
-	private static final String NAMESPACE_URI_2 = "http://peopleShoes.com/soap/create";
+	private static final String NAMESPACE_URI = "http://peopleShoes.com/soap/price";
 
 	@Autowired
 	private PriceService priceService;
 
-	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "PriceRequest")
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "getPriceRequest")
 	@ResponsePayload
-	public PriceResponse getPrice(@RequestPayload PriceRequest request) {
+	public GetPriceResponse getPrice(@RequestPayload GetPriceRequest request) {
 
 		ObjectFactory objectFactory = new ObjectFactory();
-		PriceResponse priceResponse = objectFactory.createPriceResponse();
+		GetPriceResponse priceResponse = objectFactory.createGetPriceResponse();
 
 		priceResponse.setPrice(priceService.getPrice(request.getIdShoes()));
 
 		return priceResponse;
 	}
 
-	@PayloadRoot(namespace = NAMESPACE_URI_2, localPart = "PriceRequest")
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "getListPriceRequest")
 	@ResponsePayload
-	public model.createPrice.PriceResponse createPrice(@RequestPayload model.createPrice.PriceRequest request) {
+	public GetListPriceResponse getListPrice(@RequestPayload GetListPriceRequest request) {
 
-		model.createPrice.ObjectFactory objectFactory = new model.createPrice.ObjectFactory();
-		model.createPrice.PriceResponse priceResponse = objectFactory.createPriceResponse();
+		System.out.println(request.getMessage());
+		ObjectFactory objectFactory = new ObjectFactory();
+		GetListPriceResponse priceResponse = objectFactory.createGetListPriceResponse();
+
+		List<Price> priceArrayList = priceService.getListPrice();
+
+		priceResponse.getPrice().addAll(priceArrayList);
+
+		return priceResponse;
+	}
+
+
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "createPriceRequest")
+	@ResponsePayload
+	public CreatePriceResponse createPrice(@RequestPayload CreatePriceRequest request) {
+
+		ObjectFactory objectFactory = new ObjectFactory();
+		CreatePriceResponse priceResponse = objectFactory.createCreatePriceResponse();
 
 		Price price = new Price();
 		price.setIdShoes(request.getIdShoes());
@@ -46,15 +60,41 @@ public class PriceEndpoint {
 
 		priceService.createPrice(price);
 
-		model.getPrice.Price price1 = priceService.getPrice(request.getIdShoes());
+		Price price1 = priceService.getPrice(request.getIdShoes());
 
-		price.setId(price1.getId());
-		price.setIdShoes(price1.getIdShoes());
-		price.setPriceEu(price1.getPriceEu());
-		price.setPriceRu(price1.getPriceRu());
+		priceResponse.setPrice(price1);
 
+		return priceResponse;
+	}
+
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "deletePriceRequest")
+	@ResponsePayload
+	public DeletePriceResponse deletePrice(@RequestPayload DeletePriceRequest request) {
+
+		ObjectFactory objectFactory = new ObjectFactory();
+		DeletePriceResponse priceResponse = objectFactory.createDeletePriceResponse();
+
+		priceService.deletePrice(request.getIdPrice());
+		priceResponse.setMessage("Ok");
+		return priceResponse;
+	}
+
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "updatePriceRequest")
+	@ResponsePayload
+	public UpdatePriceResponse createPrice(@RequestPayload UpdatePriceRequest request) {
+
+		ObjectFactory objectFactory = new ObjectFactory();
+		UpdatePriceResponse priceResponse = objectFactory.createUpdatePriceResponse();
+
+		Price price = new Price();
+		price.setId(request.getId());
+		price.setIdShoes(request.getIdShoes());
+		price.setPriceEu(request.getPriceEu());
+		price.setPriceRu(request.getPriceRu());
+		priceService.updatePrice(price);
+
+		price = priceService.getPrice(price.getIdShoes());
 		priceResponse.setPrice(price);
-
 		return priceResponse;
 	}
 }

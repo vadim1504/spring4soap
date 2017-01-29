@@ -1,12 +1,10 @@
 package soap.service;
 
-import model.getPrice.Price;
+import model.price.*;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
 
 public class PriceService {
 
@@ -19,20 +17,24 @@ public class PriceService {
     }
 
     public Price getPrice(int idShoes){
-        Price price = jdbcTemplateObject.queryForObject("call select_price(?)", new Object[]{idShoes}, new RowMapper<Price>() {
-            public Price mapRow(ResultSet resultSet, int i) throws SQLException {
-                Price price = new Price();
-                price.setId(resultSet.getInt("id"));
-                price.setIdShoes(resultSet.getInt("id_shoes"));
-                price.setPriceEu(resultSet.getDouble("priceEU"));
-                price.setPriceRu(resultSet.getDouble("priceRU"));
-                return price;
-            }
-        });
+        Price price = jdbcTemplateObject.queryForObject("call select_price(?)", new Object[]{idShoes}, new PriceMapper());
         return price;
     }
 
-    public void createPrice(model.createPrice.Price price){
+    public List<Price> getListPrice(){
+        List<Price> prices = jdbcTemplateObject.query("call selectAll_price()", new PriceMapper());
+        return prices;
+    }
+
+    public void createPrice(Price price){
         jdbcTemplateObject.update("call create_price(?,?,?)", price.getIdShoes(), price.getPriceEu(),price.getPriceRu());
+    }
+
+    public void deletePrice(int id){
+        jdbcTemplateObject.update("call delete_price(?)",id);
+    }
+
+    public void updatePrice(Price price){
+        jdbcTemplateObject.update("call update_price(?,?,?,?)",price.getIdShoes(),price.getPriceEu(),price.getPriceRu(),price.getId());
     }
 }
