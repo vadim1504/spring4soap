@@ -26,6 +26,11 @@ public class PriceService {
         return prices;
     }
 
+    public List<Price> getListPriceByMinMax(int min, int max){
+        List<Price> prices = jdbcTemplateObject.query("call select_price_byMinMax(?,?)",new Object[]{min,max},new PriceMapper());
+        return prices;
+    }
+
     public void createPrice(Price price){
         jdbcTemplateObject.update("call create_price(?,?,?)", price.getIdShoes(), price.getPriceEu(),price.getPriceRu());
     }

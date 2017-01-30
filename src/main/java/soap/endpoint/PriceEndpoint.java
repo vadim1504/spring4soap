@@ -44,6 +44,20 @@ public class PriceEndpoint {
 		return priceResponse;
 	}
 
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "getListPriceByMinMaxRequest")
+	@ResponsePayload
+	public GetListPriceResponse getListPriceByMinMax(@RequestPayload GetListPriceByMinMaxRequest request) {
+
+		ObjectFactory objectFactory = new ObjectFactory();
+		GetListPriceResponse priceResponse = objectFactory.createGetListPriceResponse();
+
+		List<Price> priceArrayList = priceService.getListPriceByMinMax(request.getMin(),request.getMax());
+
+		priceResponse.getPrice().addAll(priceArrayList);
+
+		return priceResponse;
+	}
+
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "createPriceRequest")
 	@ResponsePayload
