@@ -11,7 +11,6 @@ public class PriceMapper implements RowMapper<Price> {
 
     public Price mapRow(ResultSet resultSet, int i) throws SQLException {
         Price price = new Price();
-        price.setId(resultSet.getInt("id"));
         price.setIdShoes(resultSet.getInt("id_shoes"));
         price.setPriceEu(resultSet.getDouble("priceEU"));
         price.setPriceRu(resultSet.getDouble("priceRU"));

@@ -17,8 +17,12 @@ public class PriceService {
     }
 
     public Price getPrice(int idShoes){
-        Price price = jdbcTemplateObject.queryForObject("call select_price(?)", new Object[]{idShoes}, new PriceMapper());
-        return price;
+        List<Price> price = jdbcTemplateObject.query("call select_price(?)", new Object[]{idShoes}, new PriceMapper());
+        if (price.isEmpty()) {
+            return null;
+        } else {
+            return price.get(0);
+        }
     }
 
     public List<Price> getListPrice(){
@@ -40,6 +44,6 @@ public class PriceService {
     }
 
     public void updatePrice(Price price){
-        jdbcTemplateObject.update("call update_price(?,?,?,?)",price.getIdShoes(),price.getPriceEu(),price.getPriceRu(),price.getId());
+        jdbcTemplateObject.update("call update_price(?,?,?)",price.getIdShoes(),price.getPriceEu(),price.getPriceRu());
     }
 }
